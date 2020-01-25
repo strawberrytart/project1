@@ -112,21 +112,27 @@ def bookpage(isbn,book_id):
         res=request.form
         review=res.get("review")
         rating=res.get("inlineRadioOptions")
-        user_id=session["user_id"]
-        print(review,rating,book_id)
-        print(session["user_id"])
 
-        review_obj=db.execute("SELECT * FROM reviews WHERE (book_id=:book_id) AND (user_id=:user_id)", \
-            {"book_id":book_id, "user_id":session["user_id"]}).fetchone()
-        print(review_obj)
-        if review_obj is None:
-            db.execute("INSERT INTO reviews (rating, review, user_id, book_id) VALUES (:rating, :review, :user_id, :book_id)", \
-                {"rating":rating, "review":review, "book_id":book_id, "user_id":user_id})
-            db.commit()
-            print("Successfully added review")
-        else:
-            return render_template("error.html", message="Users cannot review the same book twice.")
-        return redirect(url_for("bookpage", isbn=isbn, book_id=book_id))
+        if not(review):
+            return render_template("error.html", message="Please write a review.")
+        elif not(rating):
+             return render_template("error.html", message="Please leave a star rating.")
+        else: 
+            user_id=session["user_id"]
+            print(review,rating,book_id)
+            print(session["user_id"])
+
+            review_obj=db.execute("SELECT * FROM reviews WHERE (book_id=:book_id) AND (user_id=:user_id)", \
+                {"book_id":book_id, "user_id":session["user_id"]}).fetchone()
+            print(review_obj)
+            if review_obj is None:
+                db.execute("INSERT INTO reviews (rating, review, user_id, book_id) VALUES (:rating, :review, :user_id, :book_id)", \
+                    {"rating":rating, "review":review, "book_id":book_id, "user_id":user_id})
+                db.commit()
+                print("Successfully added review")
+            else:
+                return render_template("error.html", message="Users cannot review the same book twice.")
+            return redirect(url_for("bookpage", isbn=isbn, book_id=book_id))
         
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -138,10 +144,10 @@ def login():
         password=res.get("password").strip()
 
         if not(username):
-            return("Please provide username.")
+            return render_template("error.html", message="Please provide username.")
 
         elif not(password):
-            return ("Please provide password.")
+            return render_template("error.html", message="Please provide password.")
 
         account=db.execute("SELECT * FROM users WHERE username=:username",{"username":username}).fetchone()
         if account is None:
