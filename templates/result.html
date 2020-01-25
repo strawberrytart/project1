@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    We got a result! 
+{% endblock %}
+
+{% block body %}
+<div class="container result">
+    {% for book in result %}
+        <div class="row pt-2">
+            <div class="col">
+                <a href="{{ url_for('bookpage',isbn=book.isbn, book_id=book.id) }}">
+                    <h1 class="lead">{{book.title}}</h1>
+                </a>
+                <p> By {{book.author}} - published in {{book.year}}</p>
+            </div>
+            <div class="col text-right">
+                <p class="text-muted">isbn: {{book.isbn}}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+
+</div>
+{% endblock %}

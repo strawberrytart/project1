@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+
+<script src="js/addons/rating.js"></script>
+
+{% block title %}
+        {{book.title}}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1> {{book.title}}</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Author</dt>
+        <dd class="col-sm-9">{{book.author}}</dd>
+
+        <dt class="col-sm-3">Publication Year </dt>
+        <dd class="col-sm-9"> {{book.year}}</dd>
+
+        <dt class="col-sm-3">ISBN</dt>
+        <dd class="col-sm-9">{{book.isbn}}</dd>      
+        {% for goodreads in goodreads %}
+
+        <dt class="col-sm-3">Goodreads Average Rating:</dt>
+        <dd class="col-sm-9">{{goodreads['average_rating']}}</dd>
+        
+        <dt class="col-sm-3"> Number of Rating received:</dt>
+        <dd class="col-sm-9">{{goodreads['work_ratings_count']}} </dd>    
+        {% endfor %}
+
+    </dl>
+</div>
+
+
+<div class="container">
+    {% for review in reviews%}
+
+    <div class="row">
+        <div class="col-12">
+            <p>{{review.username}} <span class="text-muted">{{review.created_at}} </span></p>
+        </div>
+        <div class="col-12 font-weight-light">
+            <p>"{{review.review}}" {{review.rating}} star</span> </p>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+{% if session %}
+<div class="container">
+    <form action="{{ url_for('bookpage',isbn=book.isbn, book_id=book.id)}}" method="POST">
+        <div class="form-group">
+            <label> Write a review!</label>
+            <textarea class="form-control" rows="5" name="review"></textarea>
+        </div>
+        <div class="row">
+            <label class="col-12">Leave a star rating!</label>
+            <div class="col-12">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
+                    <label class="form-check-label" for="inlineRadio1">1</label>
+                </div>
+        
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="2">
+                    <label class="form-check-label" for="inlineRadio1">2</label>
+                </div>
+        
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="3">
+                    <label class="form-check-label" for="inlineRadio1">3</label>
+                </div>
+        
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="4">
+                    <label class="form-check-label" for="inlineRadio1">4</label>
+                </div>
+        
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="5">
+                    <label class="form-check-label" for="inlineRadio1">5</label>
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+    
+
+{% endblock %}
+  
